@@ -3,7 +3,7 @@ package edu.utdallas.d_team.library.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "authors")
+@Table(name = "AUTHORS")
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

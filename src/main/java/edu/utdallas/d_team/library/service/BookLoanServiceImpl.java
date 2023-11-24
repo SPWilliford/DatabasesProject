@@ -15,6 +15,6 @@ public class BookLoanServiceImpl implements BookLoanService{
     }
     @Override
     public BookLoan saveBookLoan(BookLoan bookLoan) {
-        return null;
+        return bookLoanRepository.save(bookLoan);
     }
 }

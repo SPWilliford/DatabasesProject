@@ -16,7 +16,7 @@ public class BookAuthorId implements Serializable {
     @Column(name = "Author_id", nullable = false)
     private Integer authorId;
 
-    @Column(name = "Isbn", nullable = false, length = 17)
+    @Column(name = "Isbn", nullable = false, length = 10)
     private String isbn;
 
     public BookAuthorId(Integer authorId, String isbn) {

@@ -1,32 +1,56 @@
 package edu.utdallas.d_team.library.gui;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 
+@Component
 public class MainView extends BorderPane {
 
-    public MainView() {
+    @Autowired
+    private final SearchTab searchTab;
+    @Autowired
+    private final CheckoutTab checkoutTab;
+    @Autowired
+    private final CheckinTab checkinTab;
+    @Autowired
+    private final BorrowerTab borrowerTab;
 
+
+    @Autowired
+    public MainView(SearchTab searchTab, CheckoutTab checkoutTab, CheckinTab checkinTab, BorrowerTab borrowerTab) {
+        this.searchTab = searchTab;
+        this.checkoutTab = checkoutTab;
+        this.checkinTab = checkinTab;
+        this.borrowerTab =  borrowerTab;
+
+        initializeTabs();
+    }
+
+    private void initializeTabs() {
         TabPane tabPane = new TabPane();
 
-        Tab searchTab = new Tab("Search Books", new SearchTab().getContent());
-        searchTab.setClosable(false);
-        tabPane.getTabs().add(searchTab);
+        Tab searchBookTab = new Tab("Search Books", searchTab.getContent());
+        searchBookTab.setClosable(false);
+        tabPane.getTabs().add(searchBookTab);
 
-        Tab checkoutTab = new Tab("Check Out", new CheckoutTab().getContent());
-        checkoutTab.setClosable(false);
-        tabPane.getTabs().add(checkoutTab);
+        Tab checkoutBookTab = new Tab("Checkout Books", checkoutTab.getContent());
+        checkoutBookTab.setClosable(false);
+        tabPane.getTabs().add(checkoutBookTab);
 
-        Tab checkinTab = new Tab("Check In", new CheckinTab().getContent());
-        checkinTab.setClosable(false);
-        tabPane.getTabs().add(checkinTab);
+        Tab checkinBookTab = new Tab("Check-In Books", checkinTab.getContent());
+        checkinBookTab.setClosable(false);
+        tabPane.getTabs().add(checkinBookTab);
 
-        Tab borrowerTab = new Tab("Borrowers", new BorrowerTab().getContent());
-        borrowerTab.setClosable(false);
-        tabPane.getTabs().add(borrowerTab);
+        Tab borrowerInfoTab = new Tab("Borrower", borrowerTab.getContent());
+        borrowerInfoTab.setClosable(false);
+        tabPane.getTabs().add(borrowerInfoTab);
 
         this.setCenter(tabPane);
     }
+
 
 }

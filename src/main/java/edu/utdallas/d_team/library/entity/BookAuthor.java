@@ -3,18 +3,18 @@ package edu.utdallas.d_team.library.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "book_authors")
+@Table(name = "BOOK_AUTHORS")
 public class BookAuthor {
     @EmbeddedId
     private BookAuthorId id;
 
     @MapsId("authorId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "Author_id", nullable = false)
     private Author author;
 
     @MapsId("isbn")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "Isbn", nullable = false)
     private Book isbn;
 

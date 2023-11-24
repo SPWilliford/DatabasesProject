@@ -5,37 +5,32 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "fines")
+@Table(name = "FINES")
 public class Fine {
     @Id
     @Column(name = "Loan_id", nullable = false)
-    private Integer id;
+    private Integer loanId;
 
-    @MapsId
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "Loan_id", nullable = false)
-    private BookLoan bookLoans;
-
-    @Column(name = "Fine_amt", nullable = false, precision = 4, scale = 2)
+    @Column(name = "Fine_amt", nullable = false, precision = 6, scale = 2)
     private BigDecimal fineAmt;
 
     @Column(name = "Paid", nullable = false)
-    private Boolean paid = false;
+    private Boolean paid;
 
-    public Integer getId() {
-        return id;
+    @OneToOne
+    @JoinColumn(name = "Loan_id", referencedColumnName = "Loan_id", insertable = false, updatable = false)
+    private BookLoan bookLoan;
+
+    // Constructors, getters, and setters
+
+    public Fine() {}
+
+    public Integer getLoanId() {
+        return loanId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public BookLoan getBookLoans() {
-        return bookLoans;
-    }
-
-    public void setBookLoans(BookLoan bookLoans) {
-        this.bookLoans = bookLoans;
+    public void setLoanId(Integer loanId) {
+        this.loanId = loanId;
     }
 
     public BigDecimal getFineAmt() {
@@ -54,4 +49,11 @@ public class Fine {
         this.paid = paid;
     }
 
+    public BookLoan getBookLoan() {
+        return bookLoan;
+    }
+
+    public void setBookLoan(BookLoan bookLoan) {
+        this.bookLoan = bookLoan;
+    }
 }

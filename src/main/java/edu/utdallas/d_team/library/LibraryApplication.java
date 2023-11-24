@@ -46,7 +46,7 @@ public class LibraryApplication {
 
         @Override
         public void start(Stage primaryStage) throws Exception {
-            MainView mainView = new MainView();
+            MainView mainView = springContext.getBean(MainView.class);
             Scene scene = new Scene(mainView, 800, 600);
             primaryStage.setScene(scene);
             primaryStage.setTitle("Library Application");

@@ -57,5 +57,10 @@ public class BookAuthorServiceImpl implements BookAuthorService {
         return bookAuthorRepository.existsById(bookAuthorId);
     }
 
+    @Override
+    public List<BookAuthor> findByIsbnTitleAuthorContaining(String searchText) {
+        return bookAuthorRepository.findByIsbnTitleAuthorContaining(searchText);
+    }
+
 }
 

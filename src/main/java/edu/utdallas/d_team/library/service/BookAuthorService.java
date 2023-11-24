@@ -20,4 +20,6 @@ public interface BookAuthorService {
     List<BookAuthor> findBookAuthorsByBookTitle(String title);
 
     boolean existsById(BookAuthorId bookAuthorId);
+
+    List<BookAuthor> findByIsbnTitleAuthorContaining(String query);
 }
