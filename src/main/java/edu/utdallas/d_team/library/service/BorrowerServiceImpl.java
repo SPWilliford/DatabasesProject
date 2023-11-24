@@ -4,7 +4,8 @@ import edu.utdallas.d_team.library.entity.Borrower;
 import edu.utdallas.d_team.library.repository.BorrowerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class BorrowerServiceImpl implements BorrowerService{
@@ -25,4 +26,12 @@ public class BorrowerServiceImpl implements BorrowerService{
 
         return borrowerRepository.existsBySsn(ssn);
     }
+
+    @Override
+    public Optional<Borrower> findBorrowerByCardId(String cardId) {
+
+        return Optional.ofNullable(borrowerRepository.findByCardId(cardId));
+
+    }
+
 }

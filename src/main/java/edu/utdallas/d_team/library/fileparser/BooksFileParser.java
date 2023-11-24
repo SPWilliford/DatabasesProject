@@ -55,7 +55,7 @@ public class BooksFileParser {
 
         logger.info("Processing record: {}",(Object) record);
 
-        String isbn = record[1];
+        String isbn = record[0];
         String title = record[2];
         // Retrieve the book by ISBN or create and save a new one if it doesn't exist
         Book book = bookService.findBookByIsbn(isbn)

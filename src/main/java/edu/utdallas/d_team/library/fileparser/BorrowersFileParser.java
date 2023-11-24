@@ -43,12 +43,14 @@ public class BorrowersFileParser {
 
     private void processRecord(String[] record) {
         logger.info("Processing borrower record: {}", (Object) record);
+        String id = record[0];
         String ssn = record[1];
         String fullName = record[2].trim() + " " + record[3].trim();
         String address = record[5].trim() + ", " + record[6].trim() + ", " + record[7].trim();
         String phone = record[8];
         if (!borrowerService.existsBySsn(ssn)) {
             Borrower borrower = new Borrower();
+            borrower.setCardId(id);
             borrower.setSsn(ssn);
             borrower.setBname(fullName);
             borrower.setAddress(address);

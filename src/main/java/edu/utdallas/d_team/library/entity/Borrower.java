@@ -3,31 +3,42 @@ package edu.utdallas.d_team.library.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "borrower")
+@Table(name = "BORROWER")
 public class Borrower {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Card_id", nullable = false)
-    private Integer id;
+    @Column(name = "Card_id", nullable = false, length = 8)
+    private String cardId;
+
+    @Column(name = "Ssn", nullable = false, unique = true, length = 11)
+    private String ssn;
 
     @Column(name = "Bname", nullable = false, length = 100)
     private String bname;
 
-    @Column(name = "Address", nullable = false)
+    @Column(name = "Address", nullable = false, length = 255)
     private String address;
 
     @Column(name = "Phone", length = 15)
     private String phone;
 
-    @Column(name = "Ssn", nullable = false, length = 11)
-    private String ssn;
+    // Constructors, getters, and setters
 
-    public Integer getId() {
-        return id;
+    public Borrower() {}
+
+    public String getCardId() {
+        return cardId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCardId(String cardId) {
+        this.cardId = cardId;
+    }
+
+    public String getSsn() {
+        return ssn;
+    }
+
+    public void setSsn(String ssn) {
+        this.ssn = ssn;
     }
 
     public String getBname() {
@@ -53,13 +64,4 @@ public class Borrower {
     public void setPhone(String phone) {
         this.phone = phone;
     }
-
-    public String getSsn() {
-        return ssn;
-    }
-
-    public void setSsn(String ssn) {
-        this.ssn = ssn;
-    }
-
 }

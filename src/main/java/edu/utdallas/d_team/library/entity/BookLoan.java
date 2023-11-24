@@ -3,14 +3,23 @@ package edu.utdallas.d_team.library.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
-@Table(name = "book_loans")
+@Table(name = "BOOK_LOANS")
 public class BookLoan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Loan_id", nullable = false)
-    private Integer id;
+    @Column(name = "Loan_id")
+    private Integer loanId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "Isbn", referencedColumnName = "Isbn", nullable = false)
+    private Book book;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "Card_id", referencedColumnName = "Card_id", nullable = false)
+    private Borrower borrower;
 
     @Column(name = "Date_out", nullable = false)
     private LocalDate dateOut;
@@ -19,14 +28,34 @@ public class BookLoan {
     private LocalDate dueDate;
 
     @Column(name = "Date_in")
-    private LocalDate dateIn;
+    private Date dateIn;
 
-    public Integer getId() {
-        return id;
+    // Constructors, getters and setters
+
+    public BookLoan() {}
+
+    public Integer getLoanId() {
+        return loanId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setLoanId(Integer loanId) {
+        this.loanId = loanId;
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
+    }
+
+    public Borrower getBorrower() {
+        return borrower;
+    }
+
+    public void setBorrower(Borrower borrower) {
+        this.borrower = borrower;
     }
 
     public LocalDate getDateOut() {
@@ -45,12 +74,11 @@ public class BookLoan {
         this.dueDate = dueDate;
     }
 
-    public LocalDate getDateIn() {
+    public Date getDateIn() {
         return dateIn;
     }
 
-    public void setDateIn(LocalDate dateIn) {
+    public void setDateIn(Date dateIn) {
         this.dateIn = dateIn;
     }
-
 }
