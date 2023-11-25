@@ -33,6 +33,7 @@ public class LibraryGuiMediator {
         this.bookLoanService = bookLoanService;
     }
 
+    // This is the method that is used by the SearchTab class
     public List<String> searchBooks(String searchText) {
         List<BookAuthor> bookAuthors = bookAuthorService.findByIsbnTitleAuthorContaining(searchText);
         Map<Book, Set<Author>> bookToAuthorsMap = new HashMap<>();
@@ -46,11 +47,26 @@ public class LibraryGuiMediator {
                 .collect(Collectors.toList());
     }
 
+    // Used by the searchBooks function, returns the formatted string of book info with authors and availability
     private String formatBookWithAuthors(Book book, Set<Author> authors) {
         String authorsString = authors.stream()
                 .map(Author::getName)
                 .collect(Collectors.joining(", "));
-        return "ISBN: " + book.getIsbn() + ", Title: " + book.getTitle() + ", Authors: " + authorsString;
+
+        String authorsInfo = ", Author(s): " + authorsString;
+        String availability = ", Availability: ";
+        if (bookLoanService.isBookAvailable(book.getIsbn())){
+            availability += "Book is Currently Available";
+        }
+        else{
+            availability += "Book is Currently Unavailable";
+        }
+
+        return book.toString() + authorsInfo + availability;
+    }
+
+    public Optional<Book> getBookByIsbn(String isbn) {
+        return bookService.findBookByIsbn(isbn);
     }
 
     public Borrower getBorrowerInfo(String cardId) {
@@ -58,39 +74,28 @@ public class LibraryGuiMediator {
         return borrowerService.findBorrowerByCardId(cardId).orElse(null);
     }
 
-    public String createBookLoan(List<String> isbns, String cardId) {
+    public String createBookLoans(List<Book> books, String borrowerCardId) {
+        String checkoutStatus = null;
         try {
-            Optional<Borrower> borrowerOpt = borrowerService.findBorrowerByCardId(cardId);
-
-            if (borrowerOpt.isEmpty()) {
-                return "Error: Borrower not found with Card ID: " + cardId;
-            }
-            Borrower borrower = borrowerOpt.get();
-
-            for (String isbn : isbns) {
-                Optional<Book> bookOpt = bookService.findBookByIsbn(isbn);
-
-                if (bookOpt.isEmpty()) {
-                    return "Error: Book not found with ISBN: " + isbn;
+            Optional<Borrower> opt_borrower = borrowerService.findBorrowerByCardId(borrowerCardId);
+            if (opt_borrower.isPresent()){
+                Borrower borrower = opt_borrower.get();
+                for (Book book : books) {
+                    BookLoan newLoan = new BookLoan();
+                    newLoan.setBook(book);
+                    newLoan.setBorrower(borrower);
+                    LocalDate currentDate = LocalDate.now();
+                    newLoan.setDateOut(currentDate);
+                    newLoan.setDueDate(currentDate.plusDays(14));
+                    bookLoanService.saveBookLoan(newLoan);
                 }
-                Book book = bookOpt.get();
-
-                // Additional checks can be performed here, like checking for maximum loans, or if the book is already loaned out.
-
-                BookLoan newLoan = new BookLoan();
-                newLoan.setBook(book);
-                newLoan.setBorrower(borrower);
-                LocalDate currentDate = LocalDate.now();
-                newLoan.setDateOut(currentDate);
-                newLoan.setDueDate(currentDate.plusDays(14));
-
-                // Save the new BookLoan
-                bookLoanService.saveBookLoan(newLoan);
             }
-            return "Success: Book(s) checked out.";
+            checkoutStatus = "Success: Books checked out.";
         } catch (Exception e) {
-            return "Error: " + e.getMessage(); // Simplified error handling
+            checkoutStatus = "Error: " + e.getMessage();
         }
+        return checkoutStatus;
+
     }
 
 

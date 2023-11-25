@@ -31,4 +31,8 @@ public class Book {
         this.title = title;
     }
 
+    @Override
+    public String toString() {
+        return "ISBN: " + this.isbn + ", Title: " + this.title;
+    }
 }
