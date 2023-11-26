@@ -19,7 +19,7 @@ import java.util.Optional;
 @Component
 public class CheckoutTab {
 
-    private LibraryGuiMediator mediator;
+    private final LibraryGuiMediator mediator;
     private final List<Book> selectedBooks = new ArrayList<>();
     private final ListView<Book> selectedBooksView = new ListView<>();
     private Borrower selectedBorrower = null;
@@ -80,7 +80,7 @@ public class CheckoutTab {
     }
 
     private String extractIsbn(String bookInfo) {
-        // Extract ISBN from the selected string
+
         return bookInfo.split(",")[0].replace("ISBN: ", "").trim();
     }
 
