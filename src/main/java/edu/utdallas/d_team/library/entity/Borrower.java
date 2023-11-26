@@ -67,8 +67,6 @@ public class Borrower {
 
     @Override
     public String toString() {
-        return "Borrower{" +
-                "bname='" + bname + '\'' +
-                '}';
+        return cardId + " ," + ssn + " ," + bname + " ," + address + " ," + phone;
     }
 }

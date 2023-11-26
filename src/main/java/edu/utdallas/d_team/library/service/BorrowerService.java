@@ -10,4 +10,5 @@ public interface BorrowerService {
 
     public Optional<Borrower> findBorrowerByCardId(String cardId);
 
+    public String findHighestCardID();
 }

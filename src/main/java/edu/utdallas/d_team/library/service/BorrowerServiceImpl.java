@@ -34,4 +34,10 @@ public class BorrowerServiceImpl implements BorrowerService{
 
     }
 
+    @Override
+    public String findHighestCardID() {
+
+        return borrowerRepository.findHighestCardId();
+    }
+
 }

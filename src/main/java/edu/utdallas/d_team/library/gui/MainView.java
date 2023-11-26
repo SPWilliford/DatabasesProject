@@ -33,19 +33,19 @@ public class MainView extends BorderPane {
     private void initializeTabs() {
         TabPane tabPane = new TabPane();
 
-        Tab searchBookTab = new Tab("Search Books", searchTab.getContent());
+        Tab searchBookTab = new Tab("Search", searchTab.getContent());
         searchBookTab.setClosable(false);
         tabPane.getTabs().add(searchBookTab);
 
-        Tab checkoutBookTab = new Tab("Checkout Books", checkoutTab.getContent());
+        Tab checkoutBookTab = new Tab("Check Out", checkoutTab.getContent());
         checkoutBookTab.setClosable(false);
         tabPane.getTabs().add(checkoutBookTab);
 
-        Tab checkinBookTab = new Tab("Check-In Books", checkinTab.getContent());
+        Tab checkinBookTab = new Tab("Check In", checkinTab.getContent());
         checkinBookTab.setClosable(false);
         tabPane.getTabs().add(checkinBookTab);
 
-        Tab borrowerInfoTab = new Tab("Borrower", borrowerTab.getContent());
+        Tab borrowerInfoTab = new Tab("Borrowers", borrowerTab.getContent());
         borrowerInfoTab.setClosable(false);
         tabPane.getTabs().add(borrowerInfoTab);
 
