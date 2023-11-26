@@ -5,6 +5,7 @@ import edu.utdallas.d_team.library.entity.Book;
 import edu.utdallas.d_team.library.entity.BookAuthor;
 import edu.utdallas.d_team.library.entity.Borrower;
 import edu.utdallas.d_team.library.entity.BookLoan;
+import edu.utdallas.d_team.library.repository.BorrowerRepository;
 import edu.utdallas.d_team.library.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,14 +24,17 @@ public class LibraryGuiMediator {
     private final BookLoanService bookLoanService;
 
     private final BorrowerService borrowerService;
+    private final BorrowerRepository borrowerRepository;
 
     @Autowired
-    public LibraryGuiMediator(BookService bookService, AuthorService authorService, BookAuthorService bookAuthorService, BorrowerService borrowerService, BookLoanService bookLoanService){
+    public LibraryGuiMediator(BookService bookService, AuthorService authorService, BookAuthorService bookAuthorService, BorrowerService borrowerService, BookLoanService bookLoanService,
+                              BorrowerRepository borrowerRepository){
         this.bookService = bookService;
         this.authorService = authorService;
         this.bookAuthorService = bookAuthorService;
         this.borrowerService = borrowerService;
         this.bookLoanService = bookLoanService;
+        this.borrowerRepository = borrowerRepository;
     }
 
     // This is the method that is used by the SearchTab class
@@ -117,6 +121,35 @@ public class LibraryGuiMediator {
             return "Error Checking In Book: " + selectedLoan.getBook().toString();
         }
 
+
+    }
+
+    public String createBorrower(String name, String ssn, String fullAddress, String phone) {
+        // check if there is already a ssn for that borrower
+        if (borrowerService.existsBySsn(ssn))
+        {
+            return "Account already exists with SSN: " + ssn;
+        } else if (name.isEmpty() || ssn.isEmpty() || fullAddress.isEmpty()) {
+            return "There must be a value for name, ssn, and address";
+        }
+        else {
+            Borrower b = new Borrower();
+            b.setCardId(generateNewCardID());
+            b.setSsn(ssn);
+            b.setBname(name);
+            b.setAddress(fullAddress);
+            b.setPhone(phone);
+            borrowerRepository.save(b);
+            return "Created New Borrower Account: " + b.toString();
+        }
+    }
+
+    private String generateNewCardID() {
+        String highestId = borrowerService.findHighestCardID();
+        Integer numericPart = Integer.parseInt(highestId.substring(2));
+        numericPart++;
+
+        return String.format("ID%06d", numericPart);
 
     }
 }
