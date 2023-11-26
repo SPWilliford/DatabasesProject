@@ -98,8 +98,25 @@ public class LibraryGuiMediator {
 
     }
 
+    public List<BookLoan> getBookLoansByBorrower(Borrower borrower){
+        return bookLoanService.findByBorrowerAndDateInIsNull(borrower);
+    }
 
     public Optional<Book> findBookByIsbn(String isbn) {
         return bookService.findBookByIsbn(isbn);
+    }
+
+    public String checkInBook(BookLoan selectedLoan) {
+        try {
+            LocalDate today = LocalDate.now();
+            selectedLoan.setDateIn(today);
+            bookLoanService.saveBookLoan(selectedLoan);
+            return "Checked In: " + today + " ," + selectedLoan.getBook().toString();
+        }
+        catch (Exception e) {
+            return "Error Checking In Book: " + selectedLoan.getBook().toString();
+        }
+
+
     }
 }

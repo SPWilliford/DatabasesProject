@@ -1,7 +1,10 @@
 package edu.utdallas.d_team.library.service;
 
 import edu.utdallas.d_team.library.entity.BookLoan;
+import edu.utdallas.d_team.library.entity.Borrower;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 public interface BookLoanService {
 
@@ -9,5 +12,8 @@ public interface BookLoanService {
     BookLoan saveBookLoan(BookLoan bookLoan);
     boolean isBookAvailable(String isbn);
 
+    List<BookLoan> getBookLoansByBorrowerID(String cardId);
+
+    List<BookLoan> findByBorrowerAndDateInIsNull(Borrower borrower);
 
 }

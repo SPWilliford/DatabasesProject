@@ -1,6 +1,7 @@
 package edu.utdallas.d_team.library.service;
 
 import edu.utdallas.d_team.library.entity.BookLoan;
+import edu.utdallas.d_team.library.entity.Borrower;
 import edu.utdallas.d_team.library.repository.BookLoanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,5 +29,18 @@ public class BookLoanServiceImpl implements BookLoanService{
         return activeLoans.isEmpty();
     }
 
+    @Override
+    public List<BookLoan> getBookLoansByBorrowerID(String cardId) {
+        return bookLoanRepository.findByBorrower_CardId(cardId);
+    }
+
+    @Override
+    public List<BookLoan> findByBorrowerAndDateInIsNull(Borrower borrower) {
+        return bookLoanRepository.findByBorrowerAndDateInIsNull(borrower);
+    }
+
+    public List<BookLoan> getBookLoansByBorrower(Borrower borrower) {
+        return bookLoanRepository.findByBorrowerAndDateInIsNull(borrower);
+    }
 
 }

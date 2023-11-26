@@ -28,7 +28,7 @@ public class BookLoan {
     private LocalDate dueDate;
 
     @Column(name = "Date_in")
-    private Date dateIn;
+    private LocalDate dateIn;
 
     // Constructors, getters and setters
 
@@ -74,11 +74,19 @@ public class BookLoan {
         this.dueDate = dueDate;
     }
 
-    public Date getDateIn() {
+    public LocalDate getDateIn() {
         return dateIn;
     }
 
-    public void setDateIn(Date dateIn) {
+    public void setDateIn(LocalDate dateIn) {
         this.dateIn = dateIn;
+    }
+
+    @Override
+    public String toString() {
+        return  "Loan ID: " + loanId + ", " + book +
+                ", Date Out: " + dateOut +
+                ", Date Due: " + dueDate;
+
     }
 }
