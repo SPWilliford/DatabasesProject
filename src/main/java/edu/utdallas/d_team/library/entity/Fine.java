@@ -56,4 +56,9 @@ public class Fine {
     public void setBookLoan(BookLoan bookLoan) {
         this.bookLoan = bookLoan;
     }
+
+    @Override
+    public String toString() {
+        return "Loan ID: " + this.loanId + ", Amount: $" + this.fineAmt + ", Paid: " + (this.paid ? "Yes" : "No");
+    }
 }

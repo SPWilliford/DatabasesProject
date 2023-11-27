@@ -6,14 +6,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+
 public interface BookLoanService {
 
     @Transactional
     BookLoan saveBookLoan(BookLoan bookLoan);
+
     boolean isBookAvailable(String isbn);
 
     List<BookLoan> getBookLoansByBorrowerID(String cardId);
 
     List<BookLoan> findByBorrowerAndDateInIsNull(Borrower borrower);
+
+    List<BookLoan> getAllBookLoans();
+
+
+
+
 
 }

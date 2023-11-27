@@ -43,4 +43,9 @@ public class BookLoanServiceImpl implements BookLoanService{
         return bookLoanRepository.findByBorrowerAndDateInIsNull(borrower);
     }
 
+
+    public List<BookLoan> getAllBookLoans() {
+        return bookLoanRepository.findAll();
+    }
+
 }
