@@ -18,14 +18,16 @@ public class MainView extends BorderPane {
     private final CheckinTab checkinTab;
     @Autowired
     private final BorrowerTab borrowerTab;
+    private final FinesTab finesTab;
 
 
     @Autowired
-    public MainView(SearchTab searchTab, CheckoutTab checkoutTab, CheckinTab checkinTab, BorrowerTab borrowerTab) {
+    public MainView(SearchTab searchTab, CheckoutTab checkoutTab, CheckinTab checkinTab, BorrowerTab borrowerTab, FinesTab finesTab) {
         this.searchTab = searchTab;
         this.checkoutTab = checkoutTab;
         this.checkinTab = checkinTab;
         this.borrowerTab =  borrowerTab;
+        this.finesTab = finesTab;
 
         initializeTabs();
     }
@@ -48,6 +50,10 @@ public class MainView extends BorderPane {
         Tab borrowerInfoTab = new Tab("Borrowers", borrowerTab.getContent());
         borrowerInfoTab.setClosable(false);
         tabPane.getTabs().add(borrowerInfoTab);
+
+        Tab finesManagementTab = new Tab("Fines", finesTab.getContent());
+        finesManagementTab.setClosable(false);
+        tabPane.getTabs().add(finesManagementTab);
 
         this.setCenter(tabPane);
     }

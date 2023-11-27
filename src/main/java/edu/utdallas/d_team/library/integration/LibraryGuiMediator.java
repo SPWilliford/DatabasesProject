@@ -1,16 +1,15 @@
 package edu.utdallas.d_team.library.integration;
 
-import edu.utdallas.d_team.library.entity.Author;
-import edu.utdallas.d_team.library.entity.Book;
-import edu.utdallas.d_team.library.entity.BookAuthor;
-import edu.utdallas.d_team.library.entity.Borrower;
-import edu.utdallas.d_team.library.entity.BookLoan;
+import edu.utdallas.d_team.library.entity.*;
 import edu.utdallas.d_team.library.repository.BorrowerRepository;
 import edu.utdallas.d_team.library.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import java.util.stream.Collectors;
@@ -20,21 +19,27 @@ public class LibraryGuiMediator {
     private final BookService bookService;
     private final AuthorService authorService;
     private final BookAuthorService bookAuthorService;
+    private final FineService fineService;
 
     private final BookLoanService bookLoanService;
 
     private final BorrowerService borrowerService;
     private final BorrowerRepository borrowerRepository;
 
+
     @Autowired
-    public LibraryGuiMediator(BookService bookService, AuthorService authorService, BookAuthorService bookAuthorService, BorrowerService borrowerService, BookLoanService bookLoanService,
-                              BorrowerRepository borrowerRepository){
+    public LibraryGuiMediator(BookService bookService, AuthorService authorService,
+                              BookAuthorService bookAuthorService,
+                              BorrowerService borrowerService, BookLoanService bookLoanService,
+                              BorrowerRepository borrowerRepository, FineService fineService)
+    {
         this.bookService = bookService;
         this.authorService = authorService;
         this.bookAuthorService = bookAuthorService;
         this.borrowerService = borrowerService;
         this.bookLoanService = bookLoanService;
         this.borrowerRepository = borrowerRepository;
+        this.fineService = fineService;
     }
 
     // This is the method that is used by the SearchTab class
@@ -152,4 +157,64 @@ public class LibraryGuiMediator {
         return String.format("ID%06d", numericPart);
 
     }
+
+    public List<Fine> calculateFines() {
+        // for every BookLoan that is past its due date, we check if there is an associated unpaid Fine to update
+        List<BookLoan> allLoans = bookLoanService.getAllBookLoans();
+        LocalDate today = LocalDate.now();
+        List<Fine> unpaidFines = new ArrayList<>();
+
+        for (BookLoan loan : allLoans) {
+            if (isLate(loan, today)) {
+                Optional<Fine> optionalFine = fineService.findFineByLoanID(loan.getLoanId());
+                if (optionalFine.isPresent()){
+                    // this means there is already a fine for this late loan
+                    Fine fine = optionalFine.get();
+                    if (!fine.getPaid()){
+                        // fine has not been paid and we add it to the list to update
+                        unpaidFines.add(fine);
+                    }
+                }
+                else {
+                    // there is not currently a fine for this late loan so we make a new one and then add it to the list
+                    Integer id = loan.getLoanId();
+                    LocalDate dueDate = loan.getDueDate();
+                    long daysOverdue = ChronoUnit.DAYS.between(dueDate, today);
+                    BigDecimal fineAmount = BigDecimal.valueOf(daysOverdue * 0.25);
+                    Fine f = new Fine();
+                    f.setLoanId(id);
+                    f.setFineAmt(fineAmount);
+                    f.setPaid(false);
+                    fineService.saveFine(f);
+                    unpaidFines.add(f);
+                }
+            }
+        }
+        return unpaidFines;
+    }
+
+    private boolean isLate(BookLoan loan, LocalDate today) {
+        boolean isLate = false;
+       //if it is not returned and its due date is before today
+        if (loan.getDateIn() == null && loan.getDueDate().isBefore(today)) {
+            return true;
+        }
+        // OR it has been returned already but after due date
+        else if (loan.getDateIn() != null && loan.getDueDate().isBefore(loan.getDateIn())){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public List<Fine> findUnpaidFinesByBorrowerId(String borrowerId) {
+           return fineService.findUnpaidFinesByBorrowerId(borrowerId);
+    }
+
+
+    public void saveFine(Fine selectedFine) {
+        fineService.saveFine(selectedFine);
+    }
 }
+
