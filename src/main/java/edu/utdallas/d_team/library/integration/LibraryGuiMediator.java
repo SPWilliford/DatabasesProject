@@ -83,27 +83,37 @@ public class LibraryGuiMediator {
         return borrowerService.findBorrowerByCardId(cardId).orElse(null);
     }
 
+    // method to handle book checking out books
     public String createBookLoans(List<Book> books, String borrowerCardId) {
-        String checkoutStatus = null;
+        StringBuilder checkoutStatus = new StringBuilder("Checkout Status:\n");
         try {
+            // get the borrower entity from the card id. it might not exist, so we have to check
             Optional<Borrower> opt_borrower = borrowerService.findBorrowerByCardId(borrowerCardId);
             if (opt_borrower.isPresent()){
                 Borrower borrower = opt_borrower.get();
                 for (Book book : books) {
-                    BookLoan newLoan = new BookLoan();
-                    newLoan.setBook(book);
-                    newLoan.setBorrower(borrower);
-                    LocalDate currentDate = LocalDate.now();
-                    newLoan.setDateOut(currentDate);
-                    newLoan.setDueDate(currentDate.plusDays(14));
-                    bookLoanService.saveBookLoan(newLoan);
+                    // have to check here if the book is actually available
+                    if (!bookLoanService.isBookAvailable(book.getIsbn())){
+                        checkoutStatus.append("Selected Book Unavailable: ").append(book.toString()).append("\n");
+                    }
+                    else {
+                        BookLoan newLoan = new BookLoan();
+                        newLoan.setBook(book);
+                        newLoan.setBorrower(borrower);
+                        LocalDate currentDate = LocalDate.now();
+                        LocalDate dueDate = currentDate.plusDays(14);
+                        newLoan.setDateOut(currentDate);
+                        newLoan.setDueDate(dueDate);
+                        bookLoanService.saveBookLoan(newLoan);
+                        checkoutStatus.append("Selected Book has been checked out: ").append(book.toString()).append("\n");
+                        checkoutStatus.append("Due Back On: ").append(dueDate).append("\n");
+                    }
                 }
             }
-            checkoutStatus = "Success: Books checked out.";
         } catch (Exception e) {
-            checkoutStatus = "Error: " + e.getMessage();
+            checkoutStatus = new StringBuilder("Error: " + e.getMessage());
         }
-        return checkoutStatus;
+        return checkoutStatus.toString();
 
     }
 
