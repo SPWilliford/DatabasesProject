@@ -4,16 +4,20 @@ import edu.utdallas.d_team.library.entity.BookLoan;
 import edu.utdallas.d_team.library.entity.Borrower;
 import edu.utdallas.d_team.library.integration.LibraryGuiMediator;
 import javafx.collections.FXCollections;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.Font;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +40,20 @@ public class CheckinTab {
     public Node getContent() {
 
     Node borrowerSearchSection = createBorrowerSearchSection();
+    
+    //format message area
+    HBox message = new HBox(messageArea);
+    Text checkedIn = new Text("Checked-In:");
+    VBox messages = new VBox(5, checkedIn, message);
+    HBox.setMargin(messages, new Insets(150, 0, 150 ,30));
+    messages.setAlignment(Pos.TOP_LEFT); 
+    VBox.setVgrow(message, Priority.ALWAYS);
+    
+    HBox checkInPage = new HBox(borrowerSearchSection, messages);
+    checkInPage.setAlignment(Pos.TOP_CENTER); 
+    
 
-
-    return new HBox(borrowerSearchSection, messageArea);
+    return checkInPage;
     }
 
     private Node createBorrowerSearchSection() {
@@ -47,6 +62,9 @@ public class CheckinTab {
         Button lookupButton = new Button("Lookup Borrower");
         TextArea borrowerInfoDisplay = new TextArea();
         Button checkinButton = new Button("Check-In");
+        Text title = new Text("Library Check-In");
+        Text booksOut = new Text("Books checked out:");
+        title.setFont(Font.font(20));
 
 
         lookupButton.setOnAction(actionEvent -> {
@@ -86,12 +104,10 @@ public class CheckinTab {
             }
         });
 
-        return new VBox(borrowerIdField, lookupButton, borrowerInfoDisplay, currentLoansView, checkinButton);
+       VBox bSearchSection = new VBox(5, title, borrowerIdField, lookupButton, borrowerInfoDisplay, booksOut, currentLoansView, checkinButton);
+       HBox.setMargin(bSearchSection, new Insets(40, 0, 50 ,30));
+
+       return bSearchSection; 
     }
 
-
-
-
 }
-
-
