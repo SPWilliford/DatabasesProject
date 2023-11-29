@@ -48,4 +48,10 @@ public class BookLoanServiceImpl implements BookLoanService{
         return bookLoanRepository.findAll();
     }
 
+    @Override
+    public Integer countActiveLoansByBorrower(Borrower borrower) {
+
+        return bookLoanRepository.countBookLoanByBorrowerAndDateInIsNull(borrower);
+    }
+
 }
