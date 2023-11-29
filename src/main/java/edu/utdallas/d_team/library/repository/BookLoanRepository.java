@@ -15,4 +15,8 @@ public interface BookLoanRepository extends JpaRepository<BookLoan, Integer> {
     List<BookLoan> findByBorrower_CardId(String cardId);
 
     List<BookLoan> findByBorrowerAndDateInIsNull(Borrower borrower);
+
+    Integer countBookLoanByBorrowerAndDateInIsNull(Borrower borrower);
+
+
 }

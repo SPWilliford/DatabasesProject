@@ -21,7 +21,5 @@ public interface BookLoanService {
     List<BookLoan> getAllBookLoans();
 
 
-
-
-
+    Integer countActiveLoansByBorrower(Borrower borrower);
 }

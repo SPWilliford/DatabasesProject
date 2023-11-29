@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -94,7 +93,10 @@ public class LibraryGuiMediator {
                 for (Book book : books) {
                     // have to check here if the book is actually available
                     if (!bookLoanService.isBookAvailable(book.getIsbn())){
-                        checkoutStatus.append("Selected Book Unavailable: ").append(book.toString()).append("\n");
+                        checkoutStatus.append("Error: Selected Book Unavailable: ").append(book.toString()).append("\n");
+                    }
+                    else if (moreThanThreeBookLoans(borrower)){
+                        checkoutStatus.append("Error: The selected borrower already has maximum number of books on loan.");
                     }
                     else {
                         BookLoan newLoan = new BookLoan();
@@ -115,6 +117,18 @@ public class LibraryGuiMediator {
         }
         return checkoutStatus.toString();
 
+    }
+
+    private boolean moreThanThreeBookLoans(Borrower borrower) {
+        Integer activeLoansCount;
+        activeLoansCount = bookLoanService.countActiveLoansByBorrower(borrower);
+        if (activeLoansCount >= 3)
+        {
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     public List<BookLoan> getBookLoansByBorrower(Borrower borrower){
