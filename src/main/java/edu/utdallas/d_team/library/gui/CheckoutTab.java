@@ -4,14 +4,16 @@ import edu.utdallas.d_team.library.entity.Book;
 import edu.utdallas.d_team.library.entity.Borrower;
 import edu.utdallas.d_team.library.integration.LibraryGuiMediator;
 import javafx.collections.FXCollections;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,23 +33,31 @@ public class CheckoutTab {
     }
 
     public Node getContent() {
-
-
+       //On the left is the book search section, on the right is the borrower info and checkout section
         Node bookSearchSection = createBookSearchSection();
-        Node borrowerSearchSection = createBorrowerLookupSection();
-        Node checkoutSection = createCheckoutSection();
+        Node borrowerCheckoutSection = createBorrowerCheckoutSection();
+       
+        HBox topSection = new HBox(10, bookSearchSection, borrowerCheckoutSection);
+        topSection.setAlignment(Pos.CENTER);
+        
+        Text bookCheckout = new Text("\n\nLibrary Checkout\n");
+        bookCheckout.setFont(Font.font(20));
+        
+        VBox page = new VBox(5, bookCheckout, topSection);
+        page.setAlignment(Pos.TOP_CENTER);
+        VBox.setMargin(page, new Insets(30, 15, 0, 15));
 
-        HBox topSection = new HBox(10, bookSearchSection, borrowerSearchSection, checkoutSection);
-        HBox.setHgrow(bookSearchSection, Priority.ALWAYS);
-        HBox.setHgrow(borrowerSearchSection, Priority.ALWAYS);
-        HBox.setHgrow(checkoutSection, Priority.ALWAYS);
-
-
-        return topSection;
+        return page;
     }
 
+
+
+
+
     private Node createBookSearchSection() {
+        //format book search section
         TextField searchField = new TextField();
+        searchField.setPromptText("Find books by title, author, ISBN");
         Button searchButton = new Button("Search");
         ListView<String> searchResults = new ListView<>();
         Button addButton = new Button("Add");
@@ -68,16 +78,23 @@ public class CheckoutTab {
         removeButton.setOnAction(event -> {
             handleRemoveBookFromList();
         });
+        
+        //two boxes with an add or remove button for checkout process
+        VBox searchFieldButton = new VBox(5, searchField, searchButton);
+        VBox searchResultsWithButton = new VBox(5, searchFieldButton, searchResults, addButton);
+        VBox selectedBooksViewWithButton = new VBox(5, selectedBooksView, removeButton);
+        HBox searchSelected = new HBox(5, searchResultsWithButton, selectedBooksViewWithButton);
 
-        HBox searchResultsWithButton = new HBox(5, searchResults, addButton);
-        HBox selectedBooksViewWithButton = new HBox(5, selectedBooksView, removeButton);
         VBox bookSearchLayout = new VBox(10);
-        bookSearchLayout.getChildren().addAll(
-                searchField, searchButton, searchResultsWithButton, selectedBooksViewWithButton
-        );
-        bookSearchLayout.setPrefWidth(300);
+        bookSearchLayout.getChildren().addAll(searchFieldButton, searchSelected);
+        HBox.setMargin(bookSearchLayout, new Insets(30, 15, 0, 30));
+        
         return bookSearchLayout;
     }
+
+
+
+
 
     private String extractIsbn(String bookInfo) {
 
@@ -108,7 +125,7 @@ public class CheckoutTab {
         }
     }
 
-    private Node createBorrowerLookupSection() {
+    private Node createBorrowerCheckoutSection() {
 
         TextField borrowerIdField = new TextField();
         borrowerIdField.setPromptText("Enter Borrower ID");
@@ -130,22 +147,22 @@ public class CheckoutTab {
                 borrowerInfoDisplay.setText("Borrower not found for ID: " + borrowerId);
             }
         });
-        return new VBox(10, borrowerIdField, lookupButton, borrowerInfoDisplay);
-    }
-
-    private Node createCheckoutSection() {
         // Implement checkout functionality
-        Button checkoutButton = new Button("Checkout");
-        // Display area for checkout status
-        TextArea checkoutStatus = new TextArea();
-        checkoutStatus.setEditable(false);
+        Button checkoutButton = new Button("Checkout selected books");
+        // to display checkout status
+        Label checkoutStatus = new Label();
         checkoutButton.setOnAction(event -> {
             handleCheckout(checkoutStatus);
         });
-        return new VBox(10, checkoutButton, checkoutStatus);
+        
+        VBox borrowerCheckout = new VBox(10, borrowerIdField, lookupButton, borrowerInfoDisplay, checkoutButton, checkoutStatus);
+        borrowerCheckout.setAlignment(Pos.TOP_CENTER);
+        HBox.setMargin(borrowerCheckout, new Insets(30, 100, 0, 30));
+
+        return borrowerCheckout;
     }
 
-    private void handleCheckout(TextArea checkoutStatus) {
+    private void handleCheckout(Label checkoutStatus) {
         if (selectedBorrower == null || selectedBooks.isEmpty()){
             checkoutStatus.setText("Please select a borrower and at least one book.");
             return;
@@ -155,6 +172,4 @@ public class CheckoutTab {
     }
 
 
-    // Additional helper methods as needed
 }
-
