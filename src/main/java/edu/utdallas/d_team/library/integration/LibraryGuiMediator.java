@@ -144,7 +144,7 @@ public class LibraryGuiMediator {
             LocalDate today = LocalDate.now();
             selectedLoan.setDateIn(today);
             bookLoanService.saveBookLoan(selectedLoan);
-            return "Checked In: " + today + " ," + selectedLoan.getBook().toString();
+            return "Check-In Success: " + today + " ," + selectedLoan.getBook().toString();
         }
         catch (Exception e) {
             return "Error Checking In Book: " + selectedLoan.getBook().toString();
