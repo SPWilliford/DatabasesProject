@@ -35,6 +35,17 @@ public class BookLoanServiceImpl implements BookLoanService{
     }
 
     @Override
+    public List<BookLoan> getBookLoansByISBN(String isbn){
+        return bookLoanRepository.findByBook_Isbn(isbn);
+    }
+
+    @Override
+    public List<BookLoan> findBookLoansByBorrowerName(String borrower_name_substring) {
+        return bookLoanRepository.findByBorrower_BnameLikeIgnoreCase("%" + borrower_name_substring + "%");
+    }
+
+
+    @Override
     public List<BookLoan> findByBorrowerAndDateInIsNull(Borrower borrower) {
         return bookLoanRepository.findByBorrowerAndDateInIsNull(borrower);
     }
@@ -53,5 +64,7 @@ public class BookLoanServiceImpl implements BookLoanService{
 
         return bookLoanRepository.countBookLoanByBorrowerAndDateInIsNull(borrower);
     }
+
+
 
 }

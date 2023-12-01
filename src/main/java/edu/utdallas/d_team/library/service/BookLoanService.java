@@ -12,6 +12,10 @@ public interface BookLoanService {
     @Transactional
     BookLoan saveBookLoan(BookLoan bookLoan);
 
+    List<BookLoan> getBookLoansByISBN(String isbn);
+
+    List<BookLoan> findBookLoansByBorrowerName(String borrower);
+
     boolean isBookAvailable(String isbn);
 
     List<BookLoan> getBookLoansByBorrowerID(String cardId);
