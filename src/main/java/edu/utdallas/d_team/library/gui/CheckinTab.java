@@ -42,30 +42,27 @@ public class CheckinTab {
     }
 
     private Node createBorrowerSearchSection() {
-        TextField borrowerIdField = new TextField();
-        borrowerIdField.setPromptText("Enter Borrower ID");
-        Button lookupButton = new Button("Lookup Borrower");
+        TextField searchField = new TextField();
+        searchField.setPromptText("Enter Borrower ID, Book ISBN or Borrower Name");
+        Button lookupButton = new Button("Search");
         TextArea borrowerInfoDisplay = new TextArea();
         Button checkinButton = new Button("Check-In");
 
 
         lookupButton.setOnAction(actionEvent -> {
-            String borrowerId = borrowerIdField.getText().trim();
-            this.selectedBorrower = mediator.getBorrowerInfo(borrowerId);
-            if (selectedBorrower != null) {
-                // Display borrower information
+            String searchText = searchField.getText().trim();
+            List<BookLoan> results = mediator.searchBookLoans(searchText);
+            currentLoansView.setItems(FXCollections.observableArrayList(results));
+        });
+
+        currentLoansView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                selectedBorrower = newSelection.getBorrower();
                 String borrowerInfo = String.format("Name: %s\nAddress: %s\nPhone: %s",
                         selectedBorrower.getBname(),
                         selectedBorrower.getAddress(),
                         selectedBorrower.getPhone());
                 borrowerInfoDisplay.setText(borrowerInfo);
-
-                // also need to get the current loans for the borrower and list them
-                bookLoansList = mediator.getBookLoansByBorrower(selectedBorrower);
-                currentLoansView.setItems(FXCollections.observableArrayList(bookLoansList));
-
-            } else {
-                borrowerInfoDisplay.setText("Borrower not found for ID: " + borrowerId);
             }
         });
 
@@ -86,7 +83,7 @@ public class CheckinTab {
             }
         });
 
-        return new VBox(borrowerIdField, lookupButton, borrowerInfoDisplay, currentLoansView, checkinButton);
+        return new VBox(searchField, lookupButton, borrowerInfoDisplay, currentLoansView, checkinButton);
     }
 
 

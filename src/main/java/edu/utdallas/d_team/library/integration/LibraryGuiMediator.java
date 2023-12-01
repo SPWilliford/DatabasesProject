@@ -55,6 +55,16 @@ public class LibraryGuiMediator {
                 .collect(Collectors.toList());
     }
 
+    public List<BookLoan> searchBookLoans(String searchString) {
+        List<BookLoan> bookLoans = new ArrayList<>();
+        bookLoans.addAll(bookLoanService.getBookLoansByISBN(searchString));
+        bookLoans.addAll(bookLoanService.getBookLoansByBorrowerID(searchString));
+        bookLoans.addAll(bookLoanService.findBookLoansByBorrowerName(searchString));
+
+        bookLoans = bookLoans.stream().distinct().collect(Collectors.toList());
+        return bookLoans;
+    }
+
     // Used by the searchBooks function, returns the formatted string of book info with authors and availability
     private String formatBookWithAuthors(Book book, Set<Author> authors) {
         String authorsString = authors.stream()
@@ -90,7 +100,14 @@ public class LibraryGuiMediator {
             Optional<Borrower> opt_borrower = borrowerService.findBorrowerByCardId(borrowerCardId);
             if (opt_borrower.isPresent()){
                 Borrower borrower = opt_borrower.get();
+                // check if borrower has unpaid fines
+                if (!fineService.findUnpaidFinesByBorrowerId(borrowerCardId).isEmpty())
+                {
+                    checkoutStatus.append("Borrower has unpaid fines");
+                    return checkoutStatus.toString();
+                }
                 for (Book book : books) {
+                    // check if the borrower has any unpaid fines
                     // have to check here if the book is actually available
                     if (!bookLoanService.isBookAvailable(book.getIsbn())){
                         checkoutStatus.append("Error: Selected Book Unavailable: ").append(book.toString()).append("\n");
@@ -152,6 +169,7 @@ public class LibraryGuiMediator {
 
 
     }
+
 
     public String createBorrower(String name, String ssn, String fullAddress, String phone) {
         // check if there is already a ssn for that borrower
